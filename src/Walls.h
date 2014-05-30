@@ -14,7 +14,7 @@
 
 class LeftWall: public Collisional {
 	HitPoints hitpoints;
-public:
+	public:
 	LeftWall() :
 			hitpoints(0, 0, 0, 600) {
 	}
@@ -25,14 +25,9 @@ public:
 	}
 };
 
-class Wall {
-public:
-	const static LeftWall LEFT_WALL;
-};
-
 class RightWall: public Collisional {
 	HitPoints hitpoints;
-public:
+	public:
 	RightWall() :
 			hitpoints(800, 800, 0, 600) {
 	}
@@ -45,7 +40,7 @@ public:
 
 class TopWall: public Collisional {
 	HitPoints hitpoints;
-public:
+	public:
 	TopWall() :
 			hitpoints(0, 800, 0, 0) {
 	}
@@ -56,13 +51,16 @@ public:
 	}
 };
 
-class BottomWall: public Collisional {
+class BottomWall: public Collisional, public Drawable {
 	HitPoints hitpoints;
-public:
+	public:
 	BottomWall() :
-			hitpoints(0, 800, 600, 600) {
+			hitpoints(0, 800, 550, 600) {
 	}
 	void collision() {
+	}
+	virtual void draw(BITMAP *buffer) {
+		rectfill(buffer, hitpoints.getLeft(), hitpoints.getTop(), hitpoints.getRight(), hitpoints.getBottom(), ColourMaker::GREEN);
 	}
 	HitPoints& getHitPoints() {
 		return hitpoints;

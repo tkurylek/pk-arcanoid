@@ -7,6 +7,8 @@
 #include "Moveable.h"
 #include "Collisional.h"
 #include "HitBox.h"
+#include "Bonus.h"
+#include "RandomUtils.h"
 #include <list>
 
 #define SCREEN_WIDTH 800
@@ -18,8 +20,78 @@ class Game {
 	list<Drawable*> drawables;
 	list<Moveable*> moveables;
 	list<Collisional*> collisionals;
+	list<Bonus*> bonuses;
 	GameWindow gameWindow;
 	BITMAP *buffer;
+	const int TICKS_PER_SECOND;
+	const int SKIP_TICKS;
+	const int MAX_FRAMESKIP;
+	double nextGameTick;
+	int loops;
+
+public:
+	Game() :
+			gameWindow(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT),
+					TICKS_PER_SECOND(50),
+					SKIP_TICKS(150 / TICKS_PER_SECOND),
+					MAX_FRAMESKIP(10),
+					nextGameTick(getTickCount()) {
+		srand(0);
+		buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
+	}
+
+	double getTickCount() {
+		struct timespec now;
+		if (clock_gettime(CLOCK_MONOTONIC, &now))
+			return 0;
+		return now.tv_sec * 1000.0 + now.tv_nsec / 1000000.0;
+	}
+
+	void start() {
+		gameWindow.open();
+		while (!key[KEY_ESC]) {
+			loops = 0;
+			while (getTickCount() > nextGameTick && loops < MAX_FRAMESKIP) {
+				moveMoveables();
+				checkCollisions();
+				nextGameTick += SKIP_TICKS;
+				loops++;
+			}
+			clear_bitmap(buffer);
+			drawDrawables();
+			blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		}
+	}
+
+	void addDrawable(Drawable* drawable) {
+		drawables.push_back(drawable);
+	}
+
+	void addCollisional(Collisional* collisional) {
+		collisionals.push_back(collisional);
+	}
+
+	void addCollisionals(list<Collisional*> collisionals) {
+		for (list<Collisional*>::iterator iterator = collisionals.begin(), end = collisionals.end(); iterator != end;
+				++iterator) {
+			addCollisional(*iterator);
+		}
+	}
+
+	void addBonus(Bonus* bonus) {
+		bonuses.push_back(bonus);
+		addDrawable(bonus);
+		addCollisional(bonus);
+	}
+
+	void addMoveable(Moveable* moveable) {
+		moveables.push_back(moveable);
+	}
+
+	virtual ~Game() {
+		gameWindow.dispose();
+	}
+private:
 
 	void checkCollisions() {
 		for (list<Collisional*>::iterator iterator = collisionals.begin(), end = collisionals.end(); iterator != end;
@@ -57,46 +129,6 @@ class Game {
 			(*iterator)->move();
 		}
 	}
-public:
-	Game() :
-			gameWindow(GFX_AUTODETECT_WINDOWED, SCREEN_WIDTH, SCREEN_HEIGHT) {
-		buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
-	}
-
-	void start() {
-		gameWindow.open();
-		while (!key[KEY_ESC]) {
-			// logic
-			moveMoveables();
-			checkCollisions();
-
-			// clear buffer
-			clear_bitmap(buffer);
-
-			// draw
-			drawDrawables();
-
-			// release buffer
-			blit(buffer, screen, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-		}
-	}
-
-	void addDrawable(Drawable* drawable) {
-		drawables.push_back(drawable);
-	}
-
-	void addCollisional(Collisional* collisional) {
-		collisionals.push_back(collisional);
-	}
-
-	void addMoveable(Moveable* moveable) {
-		moveables.push_back(moveable);
-	}
-
-	virtual ~Game() {
-		gameWindow.dispose();
-	}
-}
-;
+};
 
 #endif /* GAME_H_ */

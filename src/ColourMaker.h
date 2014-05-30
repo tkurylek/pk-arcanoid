@@ -10,6 +10,7 @@ public:
 	const static int GREEN;
 	const static int BLUE;
 	const static int BLACK;
+	const static int YELLOW;
 
 	static int make(int red, int green, int blue) {
 		return makecol(red, green, blue);
@@ -21,5 +22,6 @@ const int ColourMaker::RED = 40;
 const int ColourMaker::GREEN = 48;
 const int ColourMaker::BLUE= 32;
 const int ColourMaker::BLACK = 16;
+const int ColourMaker::YELLOW = 44;
 
 #endif /* COLOURMAKER_H_ */

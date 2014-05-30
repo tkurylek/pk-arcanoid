@@ -16,6 +16,10 @@ public:
 		this->x = x;
 		this->y = y;
 	}
+	Position(double x, double y) {
+		this->x = x;
+		this->y = y;
+	}
 };
 
 #endif /* POSITION_H_ */

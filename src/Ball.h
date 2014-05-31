@@ -36,6 +36,16 @@ public:
 		color = ColourMaker::WHITE;
 	}
 
+	void move(int x, int y) {
+		position.x = x;
+		position.y = y;
+		move();
+	}
+
+	void speedDown(double speed) {
+		speedUp(-speed);
+	}
+
 	void draw(BITMAP *buffer) {
 		circlefill(buffer, position.x, position.y, RADIUS, color);
 	}
@@ -43,7 +53,6 @@ public:
 	void collision() {
 		changeDirection();
 		speedUp(.025);
-		changeBallColour();
 		restoreLastPosition();
 		move();
 	}
@@ -59,30 +68,16 @@ public:
 		moveBallToDesignatedPosition();
 	}
 
-	void move(int x, int y) {
-		position.x = x;
-		position.y = y;
-		move();
-	}
-
-	void speedDown(double speed) {
-		speedUp(-speed);
-	}
-
 private:
-	double boundSpeedToMax(double speed, double maxSpeed) {
-		return (speed > maxSpeed)? maxSpeed : speed;
-	}
-	void moveBallToDesignatedPosition() {
-		if (movement == VERTICAL) {
-			position.y += direction.y;
-			movement = HORIZONTAL;
+
+	void speedUp(double speed) {
+		if (direction.y > 0) {
+			direction.y += speed;
 		} else {
-			position.x += direction.x;
-			movement = VERTICAL;
+			direction.y -= speed;
 		}
-		hitbox = HitPoints(position.x - RADIUS, position.x + RADIUS, position.y - RADIUS, position.y + RADIUS);
 	}
+
 	void changeDirection() {
 		if (movement == VERTICAL) {
 			direction.x *= -1;
@@ -91,6 +86,7 @@ private:
 			handlePaddleSpin();
 		}
 	}
+
 	void handlePaddleSpin() {
 		if (isInLineWithPaddle()) {
 			if (key[KEY_LEFT]) {
@@ -100,28 +96,36 @@ private:
 			}
 		}
 	}
+
 	bool isInLineWithPaddle() {
 		return position.y >= 480 && position.y <= 520;
 	}
-	void speedUp(double speed) {
-		if(direction.y > 0) {
-			direction.y += speed;
-		} else {
-			direction.y -= speed;
-		}
-	}
-	void changeBallColour() {
-		if (color == ColourMaker::WHITE) {
-			color = ColourMaker::GREEN;
-		} else {
-			color = ColourMaker::WHITE;
-		}
-	}
+
 	void rememberPosition() {
 		previousPosition = position;
 	}
+
 	void restoreLastPosition() {
 		position = previousPosition;
+	}
+
+	double boundSpeedToMax(double speed, double maxSpeed) {
+		return (speed > maxSpeed) ? maxSpeed : speed;
+	}
+
+	void moveBallToDesignatedPosition() {
+		if (movement == VERTICAL) {
+			position.y += direction.y;
+			movement = HORIZONTAL;
+		} else {
+			position.x += direction.x;
+			movement = VERTICAL;
+		}
+		updateHitpoints();
+	}
+
+	inline void updateHitpoints() {
+		hitbox = HitPoints(position.x - RADIUS, position.x + RADIUS, position.y - RADIUS, position.y + RADIUS);
 	}
 };
 

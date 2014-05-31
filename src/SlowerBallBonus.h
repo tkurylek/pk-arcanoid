@@ -16,7 +16,7 @@ public:
 	}
 
 	void activate() {
-		ball->speedDown(.5);
+		ball->speedDown(1.0);
 	}
 };
 

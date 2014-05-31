@@ -8,6 +8,9 @@
 
 using namespace std;
 
+/**
+ * Generates a wall made of bricks.
+ */
 class BrickWall: public Drawable {
 
 	list<Brick*> bricks;

@@ -15,23 +15,31 @@ class Paddle: public Drawable, public Moveable, public Collisional {
 	Position previousPosition;
 	HitPoints hitpoints;
 	double direction;
-	public:
+
+public:
 	Paddle() :
-			paddleWidth(100), PADDLE_HEIGHT(10), SPEED_X(2.0), position(
-					Position(800 / 2 - paddleWidth / 2, 600 - 80 - PADDLE_HEIGHT)), previousPosition(position), hitpoints(
-					HitPoints(position.x, position.x + paddleWidth, position.y, position.y + PADDLE_HEIGHT)), direction(
-					SPEED_X) {
+			paddleWidth(100),
+					PADDLE_HEIGHT(10),
+					SPEED_X(2.0),
+					position(Position(800 / 2 - paddleWidth / 2, 520 - PADDLE_HEIGHT)),
+					previousPosition(position),
+					hitpoints(HitPoints(position.x, position.x + paddleWidth, position.y, position.y + PADDLE_HEIGHT)),
+					direction(SPEED_X) {
 	}
 
 	void makeWider(int addition) {
 		if (paddleWidth < 200) {
+			position.x -= addition / 2;
 			paddleWidth += addition;
+			move();
 		}
 	}
 
 	void makeShorter(int subtraction) {
 		if (paddleWidth > 50) {
+			position.x += subtraction / 2;
 			paddleWidth -= subtraction;
+			move();
 		}
 	}
 
@@ -41,10 +49,10 @@ class Paddle: public Drawable, public Moveable, public Collisional {
 	}
 
 	void move() {
-		previousPosition = position;
+		rememberPosition();
 		direction = getDirectionFromKeyboard();
 		position.x += direction;
-		hitpoints = HitPoints(position.x, position.x + paddleWidth, position.y, position.y + PADDLE_HEIGHT);
+		updateHitpoints();
 	}
 
 	void collision() {
@@ -57,6 +65,14 @@ class Paddle: public Drawable, public Moveable, public Collisional {
 	}
 
 private:
+
+	inline void rememberPosition() {
+		previousPosition = position;
+	}
+
+	inline void updateHitpoints() {
+		hitpoints = HitPoints(position.x, position.x + paddleWidth, position.y, position.y + PADDLE_HEIGHT);
+	}
 
 	int getDirectionFromKeyboard() {
 		if (key[KEY_LEFT]) {

@@ -8,7 +8,8 @@ class BottomWallBonus: public Bonus {
 
 	BottomWall* bottomWall;
 	Game* game;
-	public:
+
+public:
 
 	BottomWallBonus(Game* game) :
 			Bonus() {

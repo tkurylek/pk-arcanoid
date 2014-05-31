@@ -39,32 +39,25 @@ int main() {
 	game->addMoveable(paddle);
 	game->addCollisional(paddle);
 
-	Bonus* bottomWallBonus = new BottomWallBonus(game);
-	game->addBonus(bottomWallBonus);
-
-	Bonus* additionalBallBonus = new AdditionalBallBonus(game);
-	game->addBonus(additionalBallBonus);
-
-	Bonus* blackHoleBonus = new BlackHoleBonus(ball);
-	game->addBonus(blackHoleBonus);
-
-	Bonus* shorterPaddleBonus = new ShorterPaddleBonus(paddle);
-	game->addBonus(shorterPaddleBonus);
-
-	Bonus* widerPaddleBonus = new WiderPaddleBonus(paddle);
-	game->addBonus(widerPaddleBonus);
-
-	Bonus* slowerBallBonus = new SlowerBallBonus(ball);
-	game->addBonus(slowerBallBonus);
+	int numberOfBonuses = 6;
+	Bonus* bonuses[] = {
+			new BottomWallBonus(game),
+			new AdditionalBallBonus(game),
+			new BlackHoleBonus(ball),
+			new ShorterPaddleBonus(paddle),
+			new WiderPaddleBonus(paddle),
+			new SlowerBallBonus(ball)
+	};
+	for (int i = 0; i < numberOfBonuses; i++) {
+		game->addDrawable(bonuses[i]);
+		game->addCollisional(bonuses[i]);
+	}
 
 	game->start();
 
-	delete slowerBallBonus;
-	delete widerPaddleBonus;
-	delete shorterPaddleBonus;
-	delete blackHoleBonus;
-	delete additionalBallBonus;
-	delete bottomWallBonus;
+	for (int i = 0; i < numberOfBonuses; i++) {
+		delete bonuses[i];
+	}
 	delete paddle;
 	delete topWall;
 	delete rightWall;
@@ -72,6 +65,5 @@ int main() {
 	delete ball;
 	delete simpleBrickWall;
 	delete game;
-
 	return 0;
 }

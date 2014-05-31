@@ -19,7 +19,7 @@ public:
 	}
 
 	void activate() {
-		ball->move(RandomUtils::randomInt(50, 500), RandomUtils::randomInt(300, 400));
+		ball->move(RandomUtils::randomInt(50, 500), RandomUtils::randomInt(50, 350));
 	}
 };
 

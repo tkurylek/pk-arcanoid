@@ -19,7 +19,11 @@ public:
 			BRICK_WIDTH(100),
 					BRICK_HEIGHT(20),
 					position(Position(x, y)),
-					hitbox(HitPoints(position.x, position.x + BRICK_WIDTH, position.y, position.y + BRICK_HEIGHT)),
+					hitbox(
+							HitPoints(position.x,
+									position.x + BRICK_WIDTH,
+									position.y,
+									position.y + BRICK_HEIGHT)),
 					hardness(3) {
 	}
 
@@ -42,9 +46,8 @@ public:
 	}
 
 	void collision() {
-		hardness--;
-		if (hardness <= 0) {
-			markAsHit();
+		if (--hardness <= 0) {
+			hide();
 		}
 	}
 
@@ -52,7 +55,7 @@ public:
 		return hitbox;
 	}
 private:
-	void markAsHit() {
+	void hide() {
 		hardness = 0;
 		hitbox = HitPoints();
 	}

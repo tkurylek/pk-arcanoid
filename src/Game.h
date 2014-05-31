@@ -10,6 +10,7 @@
 #include "Bonus.h"
 #include "RandomUtils.h"
 #include <list>
+#include <ctime>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -20,7 +21,6 @@ class Game {
 	list<Drawable*> drawables;
 	list<Moveable*> moveables;
 	list<Collisional*> collisionals;
-	list<Bonus*> bonuses;
 	GameWindow gameWindow;
 	BITMAP *buffer;
 	const int TICKS_PER_SECOND;
@@ -36,7 +36,7 @@ public:
 					SKIP_TICKS(150 / TICKS_PER_SECOND),
 					MAX_FRAMESKIP(10),
 					nextGameTick(getTickCount()) {
-		srand(0);
+		srand(time(0));
 		buffer = create_bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
@@ -76,12 +76,6 @@ public:
 				++iterator) {
 			addCollisional(*iterator);
 		}
-	}
-
-	void addBonus(Bonus* bonus) {
-		bonuses.push_back(bonus);
-		addDrawable(bonus);
-		addCollisional(bonus);
 	}
 
 	void addMoveable(Moveable* moveable) {

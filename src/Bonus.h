@@ -9,18 +9,22 @@
 
 class Bonus: public Drawable, public Collisional {
 
-	Position position;
-	bool hit;
 	const int RADIUS;
+	const int EXPIRATION_TIME;
+	Position position;
+	bool visible;
 	HitPoints hitbox;
-	public:
+	double startTime;
+
+public:
 
 	Bonus(int x = RandomUtils::randomInt(50, 750), int y = RandomUtils::randomInt(250, 400)) :
-			position(Position(x, y)),
-					hit(false),
-					RADIUS(20),
+			RADIUS(20),
+					EXPIRATION_TIME(10),
+					position(Position(x, y)),
+					visible(false),
 					hitbox(HitPoints()) {
-		markAsHit();
+		startTime = (unsigned int)-1;
 	}
 
 	/**
@@ -29,36 +33,54 @@ class Bonus: public Drawable, public Collisional {
 	virtual void activate() = 0;
 
 	virtual void draw(BITMAP *buffer) {
-		if (!hit) {
+		if (visible) {
 			circlefill(buffer, position.x, position.y, RADIUS, ColourMaker::YELLOW);
 		}
-		if(RandomUtils::randomInt(0, 50000) == 50) {
-			markAsUnhit();
-		}
+		showRandomly();
+		hideAfterExpirationTime();
 	}
 
 	virtual void collision() {
-		if (!hit) {
-			markAsHit();
+		if (visible) {
+			hide();
 			activate();
 		}
 	}
 
-	void markAsHit() {
-		hit = true;
-		hitbox = HitPoints();
+	virtual HitPoints& getHitPoints() {
+		return hitbox;
 	}
 
-	void markAsUnhit() {
-		hit = false;
+private:
+
+	void showRandomly() {
+		if (!visible && RandomUtils::randomInt(0, 50000) == 50) {
+			show();
+		}
+	}
+
+	void show() {
+		startTime = clock();
+		visible = true;
 		hitbox = HitPoints(position.x - RADIUS,
 				position.x + RADIUS,
 				position.y - RADIUS,
 				position.y + RADIUS);
 	}
 
-	virtual HitPoints& getHitPoints() {
-		return hitbox;
+	void hideAfterExpirationTime() {
+		if (visible && getVisibleTime() > EXPIRATION_TIME) {
+			hide();
+		}
+	}
+
+	double inline getVisibleTime() {
+		return (clock() - startTime) / CLOCKS_PER_SEC;
+	}
+
+	void hide() {
+		visible = false;
+		hitbox = HitPoints();
 	}
 };
 

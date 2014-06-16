@@ -51,6 +51,7 @@ public:
 	void move() {
 		rememberPosition();
 		direction = getDirectionFromKeyboard();
+		boundaryCheck();
 		position.x += direction;
 		updateHitpoints();
 	}
@@ -81,6 +82,15 @@ private:
 			return SPEED_X;
 		}
 		return 0;
+	}
+
+	void boundaryCheck() {
+		if(hitpoints.getLeft() <= 0) {
+			position.x = 0;
+		}
+		else if(hitpoints.getRight() > SCREEN_WIDTH) {
+			position.x = SCREEN_WIDTH-paddleWidth;
+		}
 	}
 };
 

@@ -29,10 +29,6 @@ public:
 		clear_to_color(screen, ColourMaker::WHITE);
 	}
 
-	void wait() {
-		rest(1);
-	}
-
 	void dispose() {
 		allegro_exit();
 	}

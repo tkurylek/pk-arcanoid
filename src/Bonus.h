@@ -7,6 +7,10 @@
 #include "HitBox.h"
 #include "RandomUtils.h"
 
+/**
+ * Klasa wspólna dla bonusów dostępnych w grze. Po
+ * wystąpieniu kolizji z piłką bonus zostaje aktywowany.
+ */
 class Bonus: public Drawable, public Collisional {
 
 	const int RADIUS;
@@ -24,11 +28,11 @@ public:
 					position(Position(x, y)),
 					visible(false),
 					hitbox(HitPoints()) {
-		startTime = (unsigned int)-1;
+		startTime = (unsigned int) -1;
 	}
 
 	/**
-	 * Activates the bonus. This method is triggered on collision.
+	 * Aktywuje bonus. Metoda wywoływana jest podczas kolizji z piłką.
 	 */
 	virtual void activate() = 0;
 
@@ -51,10 +55,19 @@ public:
 		return hitbox;
 	}
 
+protected:
+
+	bool getVisible() {
+		return visible;
+	}
+
 private:
 
+	/**
+	 * Losowo pokazuje bonus na polu gry.
+	 */
 	void showRandomly() {
-		if (!visible && RandomUtils::randomInt(0, 50000) == 50) {
+		if (!visible && RandomUtils::randomInt(0, 5000) == 50) {
 			show();
 		}
 	}

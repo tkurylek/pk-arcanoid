@@ -1,10 +1,3 @@
-/*
- * Moveable.h
- *
- *  Created on: 06-04-2014
- *      Author: tomek
- */
-
 #ifndef MOVEABLE_H_
 #define MOVEABLE_H_
 

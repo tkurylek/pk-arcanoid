@@ -15,16 +15,20 @@ class Brick: public Collisional, public Drawable {
 	int hardness;
 
 public:
-	Brick(int x, int y) :
-			BRICK_WIDTH(100),
-					BRICK_HEIGHT(20),
-					position(Position(x, y)),
-					hitbox(
-							HitPoints(position.x,
-									position.x + BRICK_WIDTH,
-									position.y,
-									position.y + BRICK_HEIGHT)),
-					hardness(3) {
+	Brick(int x, int y, int hardness) :
+	BRICK_WIDTH(100),
+	BRICK_HEIGHT(20),
+	position(Position(x, y)),
+	hitbox(
+			HitPoints(position.x,
+					position.x + BRICK_WIDTH,
+					position.y,
+					position.y + BRICK_HEIGHT)) {
+		if(hardness < 3) {
+			this->hardness = hardness;
+		} else {
+			this->hardness = 3;
+		}
 	}
 
 	void draw(BITMAP *buffer) {
@@ -43,6 +47,10 @@ public:
 		default:
 			return ColourMaker::GREEN;
 		}
+	}
+
+	int getHardness() {
+		return hardness;
 	}
 
 	void collision() {

@@ -1,10 +1,12 @@
 #ifndef BOTTOMWALLBONUS_H_
 #define BOTTOMWALLBONUS_H_
 
+#include "TemporaryBonus.h"
+
 /**
  * A bonus that adds bottom wall so the ball cannot escape.
  */
-class BottomWallBonus: public Bonus {
+class BottomWallBonus: public TemporaryBonus {
 
 	BottomWall* bottomWall;
 	Game* game;
@@ -12,7 +14,7 @@ class BottomWallBonus: public Bonus {
 public:
 
 	BottomWallBonus(Game* game) :
-			Bonus() {
+		TemporaryBonus() {
 		this->bottomWall = new BottomWall();
 		this->game = game;
 	}
@@ -20,6 +22,11 @@ public:
 	void activate() {
 		game->addCollisional(bottomWall);
 		game->addDrawable(bottomWall);
+	}
+
+	void deactivate() {
+		game->removeCollisional(bottomWall);
+		game->removeDrawable(bottomWall);
 	}
 
 	~BottomWallBonus() {

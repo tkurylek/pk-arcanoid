@@ -18,6 +18,7 @@ class Ball: public Drawable, public Moveable, public Collisional {
 	} movement;
 	Position direction;
 	int color;
+	bool lost;
 
 public:
 
@@ -34,6 +35,15 @@ public:
 					direction(Position(1, 1)) {
 		movement = VERTICAL;
 		color = ColourMaker::WHITE;
+		lost = false;
+	}
+
+	void lose() {
+		lost = true;
+	}
+
+	bool isLost() {
+		return lost;
 	}
 
 	void move(int x, int y) {
@@ -43,7 +53,7 @@ public:
 	}
 
 	void speedDown(double speed) {
-		speedUp(-speed);
+		direction.y = speed;
 	}
 
 	void draw(BITMAP *buffer) {
@@ -65,7 +75,9 @@ public:
 		rememberPosition();
 		direction.x = boundSpeedToMax(direction.x, 4);
 		direction.y = boundSpeedToMax(direction.y, 6);
+		boundaryCheck();
 		moveBallToDesignatedPosition();
+		updateHitpoints();
 	}
 
 private:
@@ -121,11 +133,24 @@ private:
 			position.x += direction.x;
 			movement = VERTICAL;
 		}
-		updateHitpoints();
 	}
 
 	inline void updateHitpoints() {
 		hitbox = HitPoints(position.x - RADIUS, position.x + RADIUS, position.y - RADIUS, position.y + RADIUS);
+	}
+
+	void boundaryCheck() {
+		if (hitbox.getRight() >= 800) {
+			direction.x *= -1;
+			position.x = 800-RADIUS-3;;
+		} else if (hitbox.getLeft() <= 0) {
+			direction.x *= -1;
+			position.x = RADIUS + 3;
+		}
+		if (hitbox.getTop() < 0) {
+			direction.y *= -1;
+			position.y += 3;
+		}
 	}
 };
 

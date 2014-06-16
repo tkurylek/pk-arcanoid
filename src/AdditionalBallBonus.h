@@ -5,7 +5,7 @@
 #include "Game.h"
 
 /**
- * A bonus that adds another ball to the game.
+ * Bonus dodający dodatkową piłkę do gry.
  */
 class AdditionalBallBonus: public Bonus {
 

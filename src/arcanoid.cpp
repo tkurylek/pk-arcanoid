@@ -14,25 +14,23 @@
 using namespace std;
 
 int main() {
+
 	Game *game = new Game();
 
-	BrickWall* simpleBrickWall = new BrickWall(6, 4);
-	game->addDrawable(simpleBrickWall);
-	game->addCollisionals(simpleBrickWall->getBricks());
+	Level* levels[] = {
+			new LevelOne(),
+			new LevelTwo(),
+			new LevelThree(),
+			new LevelFour()
+	};
+	int levelIndex = RandomUtils::randomInt(0, 3);
+	game->addDrawable(levels[levelIndex]);
+	game->addCollisionals(levels[levelIndex]->getBricks());
 
-	Ball* ball = new Ball(300, 300);
+	Ball* ball = new Ball(300, 200);
 	game->addDrawable(ball);
 	game->addMoveable(ball);
 	game->addCollisional(ball);
-
-	LeftWall* leftWall = new LeftWall();
-	game->addCollisional(leftWall);
-
-	RightWall* rightWall = new RightWall();
-	game->addCollisional(rightWall);
-
-	TopWall* topWall = new TopWall();
-	game->addCollisional(topWall);
 
 	Paddle* paddle = new Paddle();
 	game->addDrawable(paddle);
@@ -52,18 +50,18 @@ int main() {
 		game->addDrawable(bonuses[i]);
 		game->addCollisional(bonuses[i]);
 	}
-
-	game->start();
-
+	try {
+		game->start();
+	} catch (AllegroInitalizationException &e) {
+		cout << "Nie można uruchomić biblioteki Allegro" << endl;
+	} catch (GameOverException &e) {
+		cout << "Koniec gry. " << e.what() << endl;
+	}
 	for (int i = 0; i < numberOfBonuses; i++) {
 		delete bonuses[i];
 	}
 	delete paddle;
-	delete topWall;
-	delete rightWall;
-	delete leftWall;
 	delete ball;
-	delete simpleBrickWall;
 	delete game;
 	return 0;
 }

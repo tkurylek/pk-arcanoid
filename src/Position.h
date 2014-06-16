@@ -1,10 +1,3 @@
-/*
- * Position.h
- *
- *  Created on: 06-04-2014
- *      Author: tomek
- */
-
 #ifndef POSITION_H_
 #define POSITION_H_
 

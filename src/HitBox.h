@@ -1,10 +1,3 @@
-/*
- * HitArea.h
- *
- *  Created on: 06-04-2014
- *      Author: tomek
- */
-
 #ifndef HITAREA_H_
 #define HITAREA_H_
 

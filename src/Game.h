@@ -9,8 +9,10 @@
 #include "HitBox.h"
 #include "Bonus.h"
 #include "RandomUtils.h"
+#include "Ball.h"
 #include <list>
 #include <ctime>
+#include "GameOverException.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -28,6 +30,7 @@ class Game {
 	const int MAX_FRAMESKIP;
 	double nextGameTick;
 	int loops;
+	int numberOfBalls;
 
 public:
 	Game() :
@@ -54,6 +57,7 @@ public:
 			while (getTickCount() > nextGameTick && loops < MAX_FRAMESKIP) {
 				moveMoveables();
 				checkCollisions();
+				checkForGameOver();
 				nextGameTick += SKIP_TICKS;
 				loops++;
 			}
@@ -65,10 +69,21 @@ public:
 
 	void addDrawable(Drawable* drawable) {
 		drawables.push_back(drawable);
+		if (isBall(drawable)) {
+			numberOfBalls++;
+		}
+	}
+
+	void removeDrawable(Drawable* drawable) {
+		drawables.remove(drawable);
 	}
 
 	void addCollisional(Collisional* collisional) {
 		collisionals.push_back(collisional);
+	}
+
+	void removeCollisional(Collisional* collisional) {
+		collisionals.remove(collisional);
 	}
 
 	void addCollisionals(list<Collisional*> collisionals) {
@@ -82,10 +97,18 @@ public:
 		moveables.push_back(moveable);
 	}
 
+	void removeMoveable(Moveable* moveable) {
+		moveables.remove(moveable);
+	}
+
 	virtual ~Game() {
 		gameWindow.dispose();
 	}
 private:
+
+	template<class S> bool isBall(S* source = 0) {
+		return dynamic_cast<Ball*>(source) != 0;
+	}
 
 	void checkCollisions() {
 		for (list<Collisional*>::iterator iterator = collisionals.begin(), end = collisionals.end(); iterator != end;
@@ -108,6 +131,22 @@ private:
 		}
 	}
 
+	void checkForGameOver() {
+		for (list<Collisional*>::iterator iterator = collisionals.begin(), end = collisionals.end(); iterator != end;
+				++iterator) {
+			if (isBall(*iterator)) {
+				Ball* ball = (Ball*) *iterator;
+				if (ball->getHitPoints().getTop() > SCREEN_HEIGHT && !ball->isLost()) {
+					numberOfBalls--;
+					ball->lose();
+				}
+			}
+		}
+		if(numberOfBalls <= 0) {
+			throw GameOverException("Niestety, przegrałeś.");
+		}
+	}
+
 	void drawDrawables() {
 		acquire_screen();
 		for (list<Drawable*>::iterator iterator = drawables.begin(), end = drawables.end(); iterator != end;
@@ -123,6 +162,7 @@ private:
 			(*iterator)->move();
 		}
 	}
-};
+}
+;
 
 #endif /* GAME_H_ */
